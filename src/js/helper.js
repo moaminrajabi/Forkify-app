@@ -7,15 +7,15 @@ const timeout = function (s) {
     }, s * 1000);
   });
 };
-
-export const getJSON = async function (url) {
+export const getJson = async function (url) {
   try {
     const fetchPro = fetch(url);
     const res = await Promise.race([fetchPro, timeout(TIMEOUT_SEC)]);
     const data = await res.json();
-    if (!res.ok) throw new Error(`${data.message} - ${res.status}`);
+    console.log(data);
+    if (!res.ok) throw new Error(`${data.message} (${res.status})`);
     return data;
-  } catch (error) {
-    throw error;
+  } catch (err) {
+    throw err;
   }
 };

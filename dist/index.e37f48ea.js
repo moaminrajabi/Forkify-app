@@ -591,13 +591,6 @@ var _runtime = require("regenerator-runtime/runtime");
 var _recipeView = require("./views/recipeView");
 var _recipeViewDefault = parcelHelpers.interopDefault(_recipeView);
 const recipeContainer = document.querySelector(".recipe");
-const timeout = function(s) {
-    return new Promise(function(_, reject) {
-        setTimeout(function() {
-            reject(new Error(`Request took too long! Timeout after ${s} second`));
-        }, s * 1000);
-    });
-};
 // https://forkify-api.herokuapp.com/v2
 const controllRecipe = async function() {
     try {
@@ -1237,15 +1230,14 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecipe", ()=>loadRecipe);
+var _config = require("./config");
+var _helper = require("./helper");
 const state = {
     recipe: {}
 };
 const loadRecipe = async function(id) {
     try {
-        console.log(id);
-        const res = await fetch(`https://forkify-api.herokuapp.com/api/v2/recipes/${id}`);
-        const data = await res.json();
-        if (!res.ok) throw new Error(`${data.message} - ${res.status}`);
+        const data = await (0, _helper.getJSON)(`${(0, _config.API_URL)}/${id}`);
         const { recipe } = data.data;
         state.recipe = {
             id: recipe.id,
@@ -1259,7 +1251,39 @@ const loadRecipe = async function(id) {
         };
         console.log(state.recipe);
     } catch (error) {
-        alert(error);
+        console.error(`${error} \u{1F62D}`);
+    }
+};
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./config":"k5Hzs","./helper":"lVRAz"}],"k5Hzs":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "API_URL", ()=>API_URL);
+const API_URL = "https://forkify-api.herokuapp.com/api/v2/recipes";
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"lVRAz":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "getJSON", ()=>getJSON);
+const timeout = function(s) {
+    return new Promise(function(_, reject) {
+        setTimeout(function() {
+            reject(new Error(`Request took too long! Timeout after ${s} second`));
+        }, s * 1000);
+    });
+};
+const getJSON = async function(url) {
+    try {
+        const fetchPro = fetch(url);
+        const res = await Promise.race([
+            fetchPro,
+            timeout(5)
+        ]);
+        const data = await res.json();
+        if (!res.ok) throw new Error(`${data.message} - ${res.status}`);
+        return data;
+    } catch (error) {
+        throw error;
     }
 };
 
@@ -2600,20 +2624,7 @@ class RecipeView {
         <div class="recipe__ingredients">
           <h2 class="heading--2">Recipe ingredients</h2>
           <ul class="recipe__ingredient-list">
-          ${this.#data.ingredients.map((ing)=>{
-            return `
-                  <li class="recipe__ingredient">
-              <svg class="recipe__icon">
-                <use href="${0, _iconsSvgDefault1.default}#icon-check"></use>
-              </svg>
-              <div class="recipe__quantity">${new (0, _fractional.Fraction)(ing.quantity).toString()}</div>
-              <div class="recipe__description">
-                <span class="recipe__unit">${ing.unit}</span>
-               ${ing.description}
-              </div>
-            </li>
-            `;
-        }).join("")}
+          ${this.#data.ingredients.map(this.#generateMarkupIngredient).join("")}
           </ul>
         </div>
 
@@ -2636,6 +2647,20 @@ class RecipeView {
           </a>
         </div>
     `;
+    }
+    #generateMarkupIngredient(ing) {
+        return `
+        <li class="recipe__ingredient">
+    <svg class="recipe__icon">
+      <use href="${0, _iconsSvgDefault1.default}#icon-check"></use>
+    </svg>
+    <div class="recipe__quantity">${ing.quantity ? new (0, _fractional.Fraction)(ing.quantity).toString() : ""}</div>
+    <div class="recipe__description">
+      <span class="recipe__unit">${ing.unit}</span>
+     ${ing.description}
+    </div>
+  </li>
+  `;
     }
 }
 exports.default = new RecipeView();

@@ -2578,86 +2578,87 @@ try {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "RecipeView", ()=>RecipeView);
-var _iconsSvg = require("../../img/icons.svg");
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+// import icons from "../../img/icons.svg";
+var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
-var _iconsSvg1 = require("url:../../img/icons.svg");
-var _iconsSvgDefault1 = parcelHelpers.interopDefault(_iconsSvg1);
 var _fractional = require("fractional");
 class RecipeView {
-    #parentElement = document.querySelector(".recipe");
-    #data;
-    #erorrmessage = "we could not find that recipe. please try another one";
-    #message;
+    _parentElement = document.querySelector(".recipe");
+    _erorrmessage = "we could not find that recipe. please try another one";
+    _message = "";
+    _data;
     render(data) {
-        this.#data = data;
-        const markup = this.#generateMarkup();
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+        this._data = data;
+        const markup = this._generateMarkup();
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
-    renderMessage(message = this.#erorrmessage) {
+    _clear() {
+        this._parentElement.innerHTML = "";
+    }
+    renderSpiner() {
+        const markup = `
+      <div class="spinner">
+            <svg>
+              <use href="${(0, _iconsSvgDefault.default)}#icon-loader"></use>
+            </svg>
+          </div> `;
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", markup);
+    }
+    renderMessage(message = this._erorrmessage) {
         const markup = `<div class="message">
             <div>
               <svg>
-                <use href="${(0, _iconsSvgDefault1.default)}#icon-smile"></use>
+                <use href="${(0, _iconsSvgDefault.default)}#icon-smile"></use>
               </svg>
             </div>
             <p>${message}</p>
           </div>`;
-        this.#clear();
-        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
+        this._clear();
+        this._parentElement.insertAdjacentHTML("afterbegin", markup);
     }
-    #clear() {
-        this.#parentElement.innerHTML = "";
-    }
-    renderSpiner = function(parentEl) {
-        const markup = `
-      <div class="spinner">
-            <svg>
-              <use href="${(0, _iconsSvgDefault1.default)}#icon-loader"></use>
-            </svg>
-          </div> `;
-        this.#parentElement.innerHTML = "";
-        this.#parentElement.insertAdjacentHTML("afterbegin", markup);
-    };
     addhandelRender(handler) {
         [
             "hashchange",
             "load"
         ].forEach((ev)=>window.addEventListener(ev, handler));
     }
-    #generateMarkup() {
+    _generateMarkup() {
         return `
     <figure class="recipe__fig">
-        <img src="${this.#data.image}" alt="${this.#data.title}" class="recipe__img" />
+        <img src="${this._data.image}" alt="${this._data.title}" class="recipe__img" />
         <h1 class="recipe__title">
-          <span>${this.#data.title}</span>
+          <span>${this._data.title}</span>
         </h1>
       </figure>
 
       <div class="recipe__details">
         <div class="recipe__info">
           <svg class="recipe__info-icon">
-            <use href="${0, _iconsSvgDefault1.default}#icon-clock"></use>
+            <use href="${0, _iconsSvgDefault.default}#icon-clock"></use>
           </svg>
-          <span class="recipe__info-data recipe__info-data--minutes">${this.#data.cookingTime}</span>
+          <span class="recipe__info-data recipe__info-data--minutes">${this._data.cookingTime}</span>
           <span class="recipe__info-text">minutes</span>
         </div>
         <div class="recipe__info">
           <svg class="recipe__info-icon">
-            <use href="${0, _iconsSvgDefault1.default}#icon-users"></use>
+            <use href="${0, _iconsSvgDefault.default}#icon-users"></use>
           </svg>
-          <span class="recipe__info-data recipe__info-data--people">${this.#data.servings}</span>
+          <span class="recipe__info-data recipe__info-data--people">${this._data.servings}</span>
           <span class="recipe__info-text">servings</span>
 
           <div class="recipe__info-buttons">
             <button class="btn--tiny btn--increase-servings">
               <svg>
-                <use href="${0, _iconsSvgDefault1.default}#icon-minus-circle"></use>
+                <use href="${0, _iconsSvgDefault.default}#icon-minus-circle"></use>
               </svg>
             </button>
             <button class="btn--tiny btn--increase-servings">
               <svg>
-                <use href="${0, _iconsSvgDefault1.default}#icon-plus-circle"></use>
+                <use href="${0, _iconsSvgDefault.default}#icon-plus-circle"></use>
               </svg>
             </button>
           </div>
@@ -2665,12 +2666,12 @@ class RecipeView {
 
         <div class="recipe__user-generated">
           <svg>
-            <use href="${0, _iconsSvgDefault1.default}#icon-user"></use>
+            <use href="${0, _iconsSvgDefault.default}#icon-user"></use>
           </svg>
         </div>
         <button class="btn--round">
           <svg class="">
-            <use href="${0, _iconsSvgDefault1.default}#icon-bookmark-fill"></use>
+            <use href="${0, _iconsSvgDefault.default}#icon-bookmark-fill"></use>
           </svg>
         </button>
       </div>
@@ -2678,7 +2679,7 @@ class RecipeView {
       <div class="recipe__ingredients">
         <h2 class="heading--2">Recipe ingredients</h2>
         <ul class="recipe__ingredient-list">
-        ${this.#data.ingredients.map(this.#generateMarkupIngredients).join("")}
+        ${this._data.ingredients.map(this._generateMarkupIngredients).join("")}
   
       </div>
 
@@ -2686,27 +2687,27 @@ class RecipeView {
         <h2 class="heading--2">How to cook it</h2>
         <p class="recipe__directions-text">
           This recipe was carefully designed and tested by
-          <span class="recipe__publisher">${this.#data.publisher}</span>. Please check out
+          <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
           directions at their website.
         </p>
         <a
           class="btn--small recipe__btn"
-          href="${this.#data.sourceUrl}"
+          href="${this._data.sourceUrl}"
           target="_blank"
         >
           <span>Directions</span>
           <svg class="search__icon">
-            <use href="${0, _iconsSvgDefault1.default}#icon-arrow-right"></use>
+            <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
           </svg>
         </a>
       </div>
       `;
     }
-    #generateMarkupIngredients(ing) {
+    _generateMarkupIngredients(ing) {
         return `
     <li class="recipe__ingredient">
     <svg class="recipe__icon">
-      <use href="${0, _iconsSvgDefault1.default}#icon-check"></use>
+      <use href="${0, _iconsSvgDefault.default}#icon-check"></use>
     </svg>
     <div class="recipe__quantity">${ing.quantity ? new (0, _fractional.Fraction)(ing.quantity).toString() : ""}</div>
     <div class="recipe__description">
@@ -2719,10 +2720,10 @@ class RecipeView {
 }
 exports.default = new RecipeView();
 
-},{"../../img/icons.svg":"cMpiy","url:../../img/icons.svg":"loVOp","fractional":"3SU56","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"cMpiy":[function(require,module,exports) {
-module.exports = require("17cff2908589362b").getBundleURL("hWUTQ") + "icons.21bad73c.svg" + "?" + Date.now();
+},{"url:../../img/icons.svg":"loVOp","fractional":"3SU56","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./View":"5cUXS"}],"loVOp":[function(require,module,exports) {
+module.exports = require("9bcc84ee5d265e38").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
 
-},{"17cff2908589362b":"lgJ39"}],"lgJ39":[function(require,module,exports) {
+},{"9bcc84ee5d265e38":"lgJ39"}],"lgJ39":[function(require,module,exports) {
 "use strict";
 var bundleURL = {};
 function getBundleURLCached(id) {
@@ -2757,10 +2758,7 @@ exports.getBundleURL = getBundleURLCached;
 exports.getBaseURL = getBaseURL;
 exports.getOrigin = getOrigin;
 
-},{}],"loVOp":[function(require,module,exports) {
-module.exports = require("9bcc84ee5d265e38").getBundleURL("hWUTQ") + "icons.dfd7a6db.svg" + "?" + Date.now();
-
-},{"9bcc84ee5d265e38":"lgJ39"}],"3SU56":[function(require,module,exports) {
+},{}],"3SU56":[function(require,module,exports) {
 /*
 fraction.js
 A Javascript fraction library.
@@ -3013,21 +3011,28 @@ Fraction.primeFactors = function(n) {
 };
 module.exports.Fraction = Fraction;
 
-},{}],"9OQAM":[function(require,module,exports) {
+},{}],"5cUXS":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+class View {
+}
+exports.default = View;
+
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"9OQAM":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 class SearchView {
-    #parentEl = document.querySelector(".search");
+    _parentEl = document.querySelector(".search");
     getQuery() {
-        const query = this.#parentEl.querySelector(".search__field").value;
-        this.#clearInput;
+        const query = this._parentEl.querySelector(".search__field").value;
+        this._clearInput;
         return query;
     }
-    #clearInput() {
-        this.#parentEl.querySelector(".search__field").value = "";
+    _clearInput() {
+        this._parentEl.querySelector(".search__field").value = "";
     }
     addHandlerSearch(handler) {
-        this.#parentEl.addEventListener("submit", function(e) {
+        this._parentEl.addEventListener("submit", function(e) {
             e.preventDefault();
             handler();
         });

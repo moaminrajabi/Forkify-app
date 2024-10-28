@@ -594,8 +594,12 @@ var _searchViewJs = require("./views/searchView.js");
 var _searchViewJsDefault = parcelHelpers.interopDefault(_searchViewJs);
 var _resultViewJs = require("./views/resultView.js");
 var _resultViewJsDefault = parcelHelpers.interopDefault(_resultViewJs);
+var _paginationViewJs = require("./views/paginationView.js");
+var _paginationViewJsDefault = parcelHelpers.interopDefault(_paginationViewJs);
 // const recipeContainer = document.querySelector(".recipe");
-if (_model.hot) _model.hot.accept();
+// if (model.hot) {
+//   model.hot.accept();
+// }
 const controlRecipes = async function() {
     try {
         const id = window.location.hash.slice(1);
@@ -614,8 +618,10 @@ const contorolSearchResault = async function() {
         const query = (0, _searchViewJsDefault.default).getQuery();
         if (!query) return;
         await _model.loadSearchResault(query);
-        // console.log(model.state.search.resault);
-        (0, _resultViewJsDefault.default).render(_model.state.search.resault);
+        console.log(_model.state.search.resault);
+        // resultView.render(model.state.search.resault);
+        (0, _resultViewJsDefault.default).render(_model.getSearchResultsPage(1));
+        (0, _paginationViewJsDefault.default).render(_model.state.search);
     } catch (err) {
         console.log(err);
     }
@@ -626,7 +632,7 @@ const init = function() {
 };
 init();
 
-},{"core-js/modules/web.immediate.js":"49tUX","./model":"Y4A21","regenerator-runtime/runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/recipeView.js":"l60JC","./views/searchView.js":"9OQAM","./views/resultView.js":"f70O5"}],"49tUX":[function(require,module,exports) {
+},{"core-js/modules/web.immediate.js":"49tUX","./model":"Y4A21","regenerator-runtime/runtime":"dXNgZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./views/recipeView.js":"l60JC","./views/searchView.js":"9OQAM","./views/resultView.js":"f70O5","./views/paginationView.js":"6z7bi"}],"49tUX":[function(require,module,exports) {
 "use strict";
 // TODO: Remove this module from `core-js@4` since it's split to modules listed below
 require("52e9b3eefbbce1ed");
@@ -1883,13 +1889,16 @@ parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "state", ()=>state);
 parcelHelpers.export(exports, "loadRecpie", ()=>loadRecpie);
 parcelHelpers.export(exports, "loadSearchResault", ()=>loadSearchResault);
+parcelHelpers.export(exports, "getSearchResultsPage", ()=>getSearchResultsPage);
 var _config = require("./config");
 var _helper = require("./helper");
 const state = {
     recipe: {},
     search: {
         query: "",
-        resault: []
+        resault: [],
+        page: 1,
+        resaultPerPage: (0, _config.RES_PER_PAGE)
     }
 };
 const loadRecpie = async function(id) {
@@ -1927,14 +1936,22 @@ const loadSearchResault = async function(query) {
         throw err;
     }
 };
+const getSearchResultsPage = function(page = state.search.page) {
+    state.search.page = page;
+    const start = (page - 1) * state.search.resaultPerPage; // 0;
+    const end = page * state.search.resaultPerPage; // 9;
+    return state.search.resault.slice(start, end);
+};
 
 },{"./config":"k5Hzs","./helper":"lVRAz","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"k5Hzs":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "API_URL", ()=>API_URL);
 parcelHelpers.export(exports, "TIMEOUT_SEC", ()=>TIMEOUT_SEC);
+parcelHelpers.export(exports, "RES_PER_PAGE", ()=>RES_PER_PAGE);
 const API_URL = "https://forkify-api.herokuapp.com/api/v2/recipes";
 const TIMEOUT_SEC = 10;
+const RES_PER_PAGE = 10;
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
@@ -3064,9 +3081,9 @@ var _viewDefault = parcelHelpers.interopDefault(_view);
 var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class resultView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(".results");
     _erorrmessage = "No recipes found for you \uD83D\uDE14";
     _message = "";
-    _parentElement = document.querySelector(".results");
     _generateMarkup() {
         console.log(this._data);
         return this._data.map(this._generateMarkupPreview).join("");
@@ -3089,6 +3106,26 @@ class resultView extends (0, _viewDefault.default) {
 }
 exports.default = new resultView();
 
-},{"./View":"5cUXS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}]},["hycaY","aenu9"], "aenu9", "parcelRequire6d3a")
+},{"./View":"5cUXS","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","url:../../img/icons.svg":"loVOp"}],"6z7bi":[function(require,module,exports) {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+var _view = require("./View");
+var _viewDefault = parcelHelpers.interopDefault(_view);
+var _iconsSvg = require("url:../../img/icons.svg");
+var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
+class paginationView extends (0, _viewDefault.default) {
+    _parentElement = document.querySelector(".pagination");
+    _generateMarkup() {
+        const numPages = Math.ceil(this._data.resault.length / this._data.resaultPerPage);
+        console.log(numPages);
+        if (this._data.page === 1 && numPages > 1) return "page 1 , ohter";
+        if (this._data.page === numPages && numPages > 1) return "last page";
+        if (this._data.page < numPages) return "other page";
+        return "only 1 page";
+    }
+}
+exports.default = new paginationView();
+
+},{"./View":"5cUXS","url:../../img/icons.svg":"loVOp","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}]},["hycaY","aenu9"], "aenu9", "parcelRequire6d3a")
 
 //# sourceMappingURL=index.e37f48ea.js.map

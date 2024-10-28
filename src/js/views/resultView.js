@@ -1,9 +1,9 @@
 import View from "./View";
 import icons from "url:../../img/icons.svg";
 class resultView extends View {
+  _parentElement = document.querySelector(".results");
   _erorrmessage = "No recipes found for you 😔";
   _message = "";
-  _parentElement = document.querySelector(".results");
 
   _generateMarkup() {
     console.log(this._data);

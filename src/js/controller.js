@@ -7,12 +7,13 @@ import recipeView from "./views/recipeView.js";
 import SearchView from "./views/searchView.js";
 import searchView from "./views/searchView.js";
 import resultView from "./views/resultView.js";
+import paginationView from "./views/paginationView.js";
 
 // const recipeContainer = document.querySelector(".recipe");
 
-if (model.hot) {
-  model.hot.accept();
-}
+// if (model.hot) {
+//   model.hot.accept();
+// }
 
 const controlRecipes = async function () {
   try {
@@ -39,8 +40,11 @@ const contorolSearchResault = async function () {
 
     await model.loadSearchResault(query);
 
-    // console.log(model.state.search.resault);
-    resultView.render(model.state.search.resault);
+    console.log(model.state.search.resault);
+    // resultView.render(model.state.search.resault);
+    resultView.render(model.getSearchResultsPage(1));
+
+    paginationView.render(model.state.search);
   } catch (err) {
     console.log(err);
   }

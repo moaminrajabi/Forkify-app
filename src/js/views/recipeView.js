@@ -56,15 +56,7 @@ export class RecipeView extends View {
             </button>
           </div>
         </div>
-
-        <div class="recipe__user-generated">
-         
         </div>
-        <button class="btn--round">
-          <svg class="">
-            <use href="${icons}#icon-bookmark-fill"></use>
-          </svg>
-        </button>
       </div>
 
       <div class="recipe__ingredients">
@@ -74,26 +66,7 @@ export class RecipeView extends View {
   
       </div>
 
-      <div class="recipe__directions">
-        <h2 class="heading--2">How to cook it</h2>
-        <p class="recipe__directions-text">
-          This recipe was carefully designed and tested by
-          <span class="recipe__publisher">${
-            this._data.publisher
-          }</span>. Please check out
-          directions at their website.
-        </p>
-        <a
-          class="btn--small recipe__btn"
-          href="${this._data.sourceUrl}"
-          target="_blank"
-        >
-          <span>Directions</span>
-          <svg class="search__icon">
-            <use href="${icons}#icon-arrow-right"></use>
-          </svg>
-        </a>
-      </div>
+     
       `;
   }
 

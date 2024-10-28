@@ -620,15 +620,20 @@ const contorolSearchResault = async function() {
         await _model.loadSearchResault(query);
         console.log(_model.state.search.resault);
         // resultView.render(model.state.search.resault);
-        (0, _resultViewJsDefault.default).render(_model.getSearchResultsPage(1));
+        (0, _resultViewJsDefault.default).render(_model.getSearchResultsPage());
         (0, _paginationViewJsDefault.default).render(_model.state.search);
     } catch (err) {
         console.log(err);
     }
 };
+const controlPagination = function(goToPage) {
+    (0, _resultViewJsDefault.default).render(_model.getSearchResultsPage(goToPage));
+    (0, _paginationViewJsDefault.default).render(_model.state.search);
+};
 const init = function() {
     (0, _recipeViewJsDefault.default).addhandelRender(controlRecipes);
     (0, _searchViewJsDefault.default).addHandlerSearch(contorolSearchResault);
+    (0, _paginationViewJsDefault.default).addHandlerClick(controlPagination);
 };
 init();
 
@@ -2651,15 +2656,7 @@ class RecipeView extends (0, _viewDefault.default) {
             </button>
           </div>
         </div>
-
-        <div class="recipe__user-generated">
-         
         </div>
-        <button class="btn--round">
-          <svg class="">
-            <use href="${0, _iconsSvgDefault.default}#icon-bookmark-fill"></use>
-          </svg>
-        </button>
       </div>
 
       <div class="recipe__ingredients">
@@ -2669,24 +2666,7 @@ class RecipeView extends (0, _viewDefault.default) {
   
       </div>
 
-      <div class="recipe__directions">
-        <h2 class="heading--2">How to cook it</h2>
-        <p class="recipe__directions-text">
-          This recipe was carefully designed and tested by
-          <span class="recipe__publisher">${this._data.publisher}</span>. Please check out
-          directions at their website.
-        </p>
-        <a
-          class="btn--small recipe__btn"
-          href="${this._data.sourceUrl}"
-          target="_blank"
-        >
-          <span>Directions</span>
-          <svg class="search__icon">
-            <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
-          </svg>
-        </a>
-      </div>
+     
       `;
     }
     _generateMarkupIngredients(ing) {
@@ -3115,13 +3095,51 @@ var _iconsSvg = require("url:../../img/icons.svg");
 var _iconsSvgDefault = parcelHelpers.interopDefault(_iconsSvg);
 class paginationView extends (0, _viewDefault.default) {
     _parentElement = document.querySelector(".pagination");
+    addHandlerClick(handler) {
+        this._parentElement.addEventListener("click", function(e) {
+            const btn = e.target.closest(".btn--inline");
+            console.log(btn);
+            if (!btn) return;
+            const goToPage = +btn.dataset.goto;
+            console.log(goToPage);
+            handler(goToPage);
+        });
+    }
     _generateMarkup() {
+        const cuurPage = this._data.page;
         const numPages = Math.ceil(this._data.resault.length / this._data.resaultPerPage);
         console.log(numPages);
-        if (this._data.page === 1 && numPages > 1) return "page 1 , ohter";
-        if (this._data.page === numPages && numPages > 1) return "last page";
-        if (this._data.page < numPages) return "other page";
-        return "only 1 page";
+        if (cuurPage === 1 && numPages > 1) return `
+         <button data-goto="${cuurPage + 1}"class="btn--inline pagination__btn--next">
+            <span>Page ${cuurPage + 1}</span>
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
+            </svg>
+          </button>
+      `;
+        if (cuurPage === numPages && numPages > 1) return `
+      <button data-goto="${cuurPage - 1}" class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${cuurPage - 1}</span>
+          </button>
+          `;
+        if (cuurPage < numPages) return `
+       <button data-goto="${cuurPage - 1}" class="btn--inline pagination__btn--prev">
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-left"></use>
+            </svg>
+            <span>Page ${cuurPage - 1}</span>
+          </button>
+            <button data-goto="${cuurPage + 1}" class="btn--inline pagination__btn--next">
+            <span>Page ${cuurPage + 1}</span>
+            <svg class="search__icon">
+              <use href="${0, _iconsSvgDefault.default}#icon-arrow-right"></use>
+            </svg>
+          </button>
+      `;
+        return "";
     }
 }
 exports.default = new paginationView();

@@ -630,6 +630,10 @@ const controlPagination = function(goToPage) {
     (0, _resultViewJsDefault.default).render(_model.getSearchResultsPage(goToPage));
     (0, _paginationViewJsDefault.default).render(_model.state.search);
 };
+const controlServings = function() {
+// update recipe
+// update recipe view
+};
 const init = function() {
     (0, _recipeViewJsDefault.default).addhandelRender(controlRecipes);
     (0, _searchViewJsDefault.default).addHandlerSearch(contorolSearchResault);

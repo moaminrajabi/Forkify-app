@@ -6,8 +6,13 @@ import recpieView from "./views/recipeView.js";
 import recipeView from "./views/recipeView.js";
 import SearchView from "./views/searchView.js";
 import searchView from "./views/searchView.js";
+import resultView from "./views/resultView.js";
 
 // const recipeContainer = document.querySelector(".recipe");
+
+if (model.hot) {
+  model.hot.accept();
+}
 
 const controlRecipes = async function () {
   try {
@@ -27,14 +32,15 @@ const controlRecipes = async function () {
 };
 const contorolSearchResault = async function () {
   try {
-  
+    resultView.renderSpiner();
+
     const query = SearchView.getQuery();
     if (!query) return;
 
     await model.loadSearchResault(query);
 
-    
-    console.log(model.state.search.resault);
+    // console.log(model.state.search.resault);
+    resultView.render(model.state.search.resault);
   } catch (err) {
     console.log(err);
   }
@@ -45,4 +51,3 @@ const init = function () {
   searchView.addHandlerSearch(contorolSearchResault);
 };
 init();
-

@@ -1,5 +1,5 @@
 <div align="center">
-
+<img  height="450" src="https://github.com/moaminrajabi/Forkify-app/blob/main/src/img/preview2.png" />
 </div>
 
 ###

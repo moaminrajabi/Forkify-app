@@ -14,7 +14,7 @@
 
 ###
 
-<h1 align="center">Forkity App</h1>
+<h1 align="center">Forkify App</h1>
 
 ###
 
